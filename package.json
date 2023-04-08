@@ -1,7 +1,7 @@
 {
   "name": "@pakenfit/react-native-pin-input",
   "version": "1.0.0",
-  "description": "test",
+  "description": "Phone Pin Input for React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",

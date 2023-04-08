@@ -1,22 +1,76 @@
-# react-native-pin-input
+# @pakenfit/react-native-pin-input
 
-Phone Pin input for React Native
+Phone Pin Input for React Native.
+
+<p align='center'>
+  <img src='./assets/demo.gif'>
+</p>
+
 
 ## Installation
 
 ```sh
-npm install react-native-pin-input
+npm install @pakenfit/react-native-pin-input --save
 ```
+
+<p align="center">Or</p>
+
+```sh
+yarn add @pakenfit/react-native-pin-input
+```
+---
+
+
+##Features
+
+- [X] Fully customizable
+- [X] OTP autofill support
+- [X] Expo Go support
+- [X] No native modules required
+
+---
 
 ## Usage
 
 ```js
-import { multiply } from 'react-native-pin-input';
+import { PinInput } from '@pakenfit/react-native-pin-input';
 
 // ...
 
-const result = await multiply(3, 7);
+<PinInput length={6} />
 ```
+---
+## Props
+
+### `length`
+The number of pin inputs to display. `Default: 4`
+
+---
+
+
+### `inputProps`
+The props for each TextInput
+
+---
+
+
+### `inputStyle`
+The style applied to each `TextInput`
+
+---
+
+
+### `containerProps`
+The props for the `View` container
+
+---
+
+
+### `containerStyle`
+The style applied to the `View` container
+
+---
+
 
 ## Contributing
 

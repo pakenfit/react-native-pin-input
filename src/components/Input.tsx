@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useImperativeHandle,
   useRef,
+  useState,
 } from 'react';
 import type { TextInputProps } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
@@ -10,18 +11,36 @@ import { Colors } from '../theme/colors';
 import { StyleSheet } from 'react-native';
 
 export const Input = forwardRef<TextInput, TextInputProps>(
-  ({ placeholder = '0', style, ...rest }: TextInputProps, ref) => {
+  (
+    { placeholder = '0', style, onChangeText, ...rest }: TextInputProps,
+    ref
+  ) => {
     const innerRef = useRef<TextInput>(null);
+    const [value, setValue] = useState<string>('');
+    const [innerPlaceholder, setInnerPlaceholder] =
+      useState<string>(placeholder);
 
     useImperativeHandle(ref, () => innerRef.current as TextInput);
 
     const onFocus = useCallback(() => {
-      innerRef.current?.setNativeProps({ placeholder: '' });
+      setInnerPlaceholder('');
     }, []);
 
     const onBlur = useCallback(() => {
-      innerRef.current?.setNativeProps({ placeholder });
-    }, [placeholder]);
+      if (!value?.length) {
+        setInnerPlaceholder(placeholder);
+      }
+    }, [placeholder, value?.length]);
+
+    const handleChangeText = useCallback(
+      (text: string) => {
+        setValue(text);
+        if (text?.length) {
+          onChangeText?.(text);
+        }
+      },
+      [onChangeText]
+    );
 
     return (
       <TextInput
@@ -29,10 +48,10 @@ export const Input = forwardRef<TextInput, TextInputProps>(
         {...rest}
         placeholderTextColor={Colors.BLACKMATTE}
         style={[styles.container, style]}
-        maxLength={1}
-        placeholder={placeholder}
+        placeholder={innerPlaceholder}
         onFocus={onFocus}
         onBlur={onBlur}
+        onChangeText={handleChangeText}
       />
     );
   }

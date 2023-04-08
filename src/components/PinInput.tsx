@@ -1,15 +1,21 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { StyleSheet } from 'react-native';
-import { View, Keyboard } from 'react-native';
+import {
+  View,
+  Keyboard,
+  TextInputKeyPressEventData,
+  NativeSyntheticEvent,
+  ViewProps,
+  TextInputProps,
+} from 'react-native';
 import { Input } from './Input';
 import { TextInput } from 'react-native-gesture-handler';
-import { TextInputProps } from 'react-native';
-import { ViewProps } from 'react-native';
-import { NativeSyntheticEvent } from 'react-native';
-import { TextInputKeyPressEventData } from 'react-native';
 
 type PinInputProps = {
-  inputProps?: Omit<TextInputProps, 'style'>;
+  inputProps?: Omit<
+    TextInputProps,
+    'style' | 'onChangeText' | 'onKeyPress' | 'autoComplete' | 'keyboardType'
+  >;
   inputStyle?: TextInputProps['style'];
   containerProps?: Omit<ViewProps, 'style'>;
   containerStyle?: ViewProps['style'];
@@ -23,20 +29,31 @@ export const PinInput = ({
   containerStyle,
 }: PinInputProps) => {
   const pins = Array.from({ length: length || 4 }).map((_, i) => i);
-  const inputRefs = React.useRef<TextInput[]>([]);
+  const inputRefs = useRef<TextInput[]>([]);
 
   const onChangeText = useCallback(
     (text: string, index: number) => {
       if (!text?.length) {
         return;
       }
+      const regexp = new RegExp(`[0-9]{${length || 4}}`);
+      const otps = text.match(regexp);
+      if (otps?.length) {
+        const otpSplits = text.split('');
+        otpSplits.forEach((otpSplit, i) => {
+          inputRefs?.current[i]?.setNativeProps({ text: otpSplit });
+        });
+        Keyboard.dismiss();
+        return;
+      }
+
       if (index + 1 <= pins.length - 1) {
         inputRefs?.current[index + 1]?.focus();
       } else {
         Keyboard.dismiss();
       }
     },
-    [pins.length]
+    [length, pins.length]
   );
 
   const onKeyPress = useCallback(
@@ -65,6 +82,7 @@ export const PinInput = ({
             onChangeText={(text) => onChangeText(text, pin)}
             onKeyPress={(event) => onKeyPress(event, pin)}
             autoComplete="sms-otp"
+            textContentType="oneTimeCode"
             keyboardType="number-pad"
           />
         );

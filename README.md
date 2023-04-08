@@ -3,7 +3,7 @@
 Phone Pin Input for React Native.
 
 <p align='center'>
-  <img src='./assets/demo.gif'>
+  <img src='./assets/demo.gif' width="300">
 </p>
 
 
@@ -21,7 +21,7 @@ yarn add @pakenfit/react-native-pin-input
 ---
 
 
-##Features
+## Features
 
 - [X] Fully customizable
 - [X] OTP autofill support

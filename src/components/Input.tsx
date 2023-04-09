@@ -9,10 +9,18 @@ import type { TextInputProps } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Colors } from '../theme/colors';
 import { StyleSheet } from 'react-native';
+import { NativeSyntheticEvent } from 'react-native';
+import { TextInputKeyPressEventData } from 'react-native';
 
 export const Input = forwardRef<TextInput, TextInputProps>(
   (
-    { placeholder = '0', style, onChangeText, ...rest }: TextInputProps,
+    {
+      placeholder = '0',
+      style,
+      onChangeText,
+      onKeyPress,
+      ...rest
+    }: TextInputProps,
     ref
   ) => {
     const innerRef = useRef<TextInput>(null);
@@ -34,12 +42,30 @@ export const Input = forwardRef<TextInput, TextInputProps>(
 
     const handleChangeText = useCallback(
       (text: string) => {
-        setValue(text);
-        if (text?.length) {
+        const regex = /^\d+$/;
+        if (regex.test(text)) {
+          setValue(text);
           onChangeText?.(text);
+        } else {
+          innerRef.current?.setNativeProps({ text: '' });
         }
       },
       [onChangeText]
+    );
+
+    const handleKeyPress = useCallback(
+      (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+        if (event.nativeEvent.key === 'Backspace') {
+          setValue('');
+          innerRef.current?.setNativeProps({ text: '' });
+          console.log(innerRef?.current?.isFocused());
+          if (!innerRef?.current?.isFocused()) {
+            innerRef.current?.setNativeProps({ placeholder: innerPlaceholder });
+          }
+        }
+        onKeyPress?.(event);
+      },
+      [innerPlaceholder, onKeyPress]
     );
 
     return (
@@ -52,6 +78,8 @@ export const Input = forwardRef<TextInput, TextInputProps>(
         onFocus={onFocus}
         onBlur={onBlur}
         onChangeText={handleChangeText}
+        maxLength={1}
+        onKeyPress={handleKeyPress}
       />
     );
   }

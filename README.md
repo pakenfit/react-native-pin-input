@@ -34,7 +34,7 @@ yarn add react-native-gesture-handler react-native-reanimated
 ## Features
 
 - Fully customizable
-- OTP autofill support
+- OTP autofill support (both `Android` and `iOS`, not tested on `web` should work as well)
 - Compatible with Expo
 - Written in Typescript
 
@@ -47,37 +47,41 @@ import { PinInput } from '@pakenfit/react-native-pin-input';
 
 // ...
 
-<PinInput length={6} />
+<PinInput length={6} onFillEnded={otp => console.log(otp)}/>
 ```
 ---
 ## Props
 
 ### `length`
-The number of pin inputs to display. `Default: 4`
+The number of pin inputs to display. `Default: 4`.
 
 ---
 
+### `onFillEnded = (opt: string) => void`
+The callback function with the final OTP when finish filling the inputs.
+
+
 
 ### `inputProps`
-The props for each TextInput
+The props for each TextInput.
 
 ---
 
 
 ### `inputStyle`
-The style applied to each `TextInput`
+The style applied to each `TextInput`.
 
 ---
 
 
 ### `containerProps`
-The props for the `View` container
+The props for the `View` container.
 
 ---
 
 
 ### `containerStyle`
-The style applied to the `View` container
+The style applied to the `View` container.
 
 ---
 

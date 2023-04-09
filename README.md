@@ -18,15 +18,25 @@ npm install @pakenfit/react-native-pin-input --save
 ```sh
 yarn add @pakenfit/react-native-pin-input
 ```
----
 
+#### Dependencies
+This library needs these dependencies to be installed in your project before you can use it:
+
+```sh
+npm install react-native-gesture-handler react-native-reanimated --save
+```
+<p align="center">Or</p>
+
+```sh
+yarn add react-native-gesture-handler react-native-reanimated
+```
 
 ## Features
 
-- [X] Fully customizable
-- [X] OTP autofill support
-- [X] Expo Go support
-- [X] No native modules required
+- Fully customizable
+- OTP autofill support
+- Compatible with Expo
+- Written in Typescript
 
 ---
 

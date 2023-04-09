@@ -22,13 +22,13 @@ type PinInputProps = {
   length?: number;
 };
 export const PinInput = ({
-  length,
+  length = 4,
   inputProps,
   inputStyle,
   containerProps,
   containerStyle,
 }: PinInputProps) => {
-  const pins = Array.from({ length: length || 4 }).map((_, i) => i);
+  const pins = Array.from({ length }).map((_, i) => i);
   const inputRefs = useRef<TextInput[]>([]);
 
   const onChangeText = useCallback(
@@ -36,7 +36,7 @@ export const PinInput = ({
       if (!text?.length) {
         return;
       }
-      const regexp = new RegExp(`[0-9]{${length || 4}}`);
+      const regexp = new RegExp(`[0-9]{${length}}`);
       const otps = text.match(regexp);
       if (otps?.length) {
         const otpSplits = text.split('');

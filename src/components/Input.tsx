@@ -58,7 +58,6 @@ export const Input = forwardRef<TextInput, TextInputProps>(
         if (event.nativeEvent.key === 'Backspace') {
           setValue('');
           innerRef.current?.setNativeProps({ text: '' });
-          console.log(innerRef?.current?.isFocused());
           if (!innerRef?.current?.isFocused()) {
             innerRef.current?.setNativeProps({ placeholder: innerPlaceholder });
           }

@@ -23,13 +23,15 @@ yarn add @pakenfit/react-native-pin-input
 This library needs these dependencies to be installed in your project before you can use it:
 
 ```sh
-npm install react-native-gesture-handler react-native-reanimated --save
+npm install react-native-gesture-handler react-native-reanimated expo-clipboard --save
 ```
 <p align="center">Or</p>
 
 ```sh
-yarn add react-native-gesture-handler react-native-reanimated
+yarn add react-native-gesture-handler react-native-reanimated expo-clipboard
 ```
+#### Using Bare React Native ?
+For `expo-clipboard` to work you need to follow [these additional steps to install expo modules.](https://docs.expo.dev/bare/installing-expo-modules/)
 
 ## Features
 

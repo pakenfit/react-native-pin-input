@@ -6,9 +6,8 @@ import React, {
   useState,
 } from 'react';
 import type { TextInputProps } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
 import { Colors } from '../theme/colors';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 import { NativeSyntheticEvent } from 'react-native';
 import { TextInputKeyPressEventData } from 'react-native';
 
@@ -30,9 +29,7 @@ export const Input = forwardRef<TextInput, TextInputProps>(
 
     useImperativeHandle(ref, () => innerRef.current as TextInput);
 
-    const onFocus = useCallback(() => {
-      setInnerPlaceholder('');
-    }, []);
+    const onFocus = useCallback(() => setInnerPlaceholder(''), []);
 
     const onBlur = useCallback(() => {
       if (!value?.length) {

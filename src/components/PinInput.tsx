@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import {
   View,
@@ -7,11 +7,11 @@ import {
   NativeSyntheticEvent,
   ViewProps,
   TextInputProps,
+  TextInput,
 } from 'react-native';
 import { Input } from './Input';
-import { TextInput } from 'react-native-gesture-handler';
 import * as Clipboard from 'expo-clipboard';
-import { Platform } from 'react-native';
+import { IS_IOS } from '../constants';
 
 type PinInputProps = {
   inputProps?: Omit<
@@ -40,15 +40,18 @@ export const PinInput = ({
     index: number | null;
   }>({ key: '', index: null });
 
+  const [keyPressed, setKeyPressed] = useState<boolean>(false);
+
   const handleOTP = useCallback(
     (otp: string): boolean => {
       const regexp = new RegExp(`[0-9]{${length}}`);
       const otps = otp.match(regexp);
       if (otps?.length) {
         const otpSplits = otp.split('');
-        otpSplits.forEach((otpSplit, i) => {
-          inputRefs?.current[i]?.setNativeProps({ text: otpSplit });
-        });
+        otpSplits.forEach(
+          (otpSplit, i) =>
+            inputRefs?.current[i]?.setNativeProps({ text: otpSplit })
+        );
         onFillEnded?.(otp);
         iosOTP.current = { key: '', index: null };
         Keyboard.dismiss();
@@ -59,27 +62,25 @@ export const PinInput = ({
     [length, onFillEnded]
   );
 
-  const onChangeText = useCallback(
-    async (text: string, index: number, isIOSOTP: boolean = false) => {
-      if (isIOSOTP) {
-        handleOTP(text);
-        return;
+  const handleChangeText = useCallback(
+    async (text: string, index: number) => {
+      const copiedText = await Clipboard.getStringAsync();
+      if (copiedText.includes(text) && !keyPressed) {
+        const otpHandled = handleOTP(copiedText);
+        if (otpHandled) {
+          return;
+        }
       }
-
-      const otpHandled = handleOTP(await Clipboard.getStringAsync());
-      if (otpHandled) {
-        return;
-      }
-
       pinsValues.current[index] = text;
       if (index + 1 <= pins.length - 1) {
         inputRefs?.current[index + 1]?.focus();
       } else {
         onFillEnded?.(pinsValues.current.join(''));
+        setKeyPressed(false);
         Keyboard.dismiss();
       }
     },
-    [handleOTP, onFillEnded, pins.length]
+    [handleOTP, keyPressed, onFillEnded, pins.length]
   );
 
   const onKeyPress = useCallback(
@@ -88,10 +89,8 @@ export const PinInput = ({
       index: number
     ) => {
       event.persist();
-      if (
-        Platform.OS === 'ios' &&
-        Number.isInteger(Number(event.nativeEvent.key))
-      ) {
+      setKeyPressed(true);
+      if (IS_IOS && Number.isInteger(Number(event.nativeEvent.key))) {
         if (iosOTP.current.index === null) {
           iosOTP.current = { key: event.nativeEvent.key, index };
         } else {
@@ -104,16 +103,22 @@ export const PinInput = ({
             iosOTP.current = { key: '', index: null };
           }
         }
-        onChangeText(iosOTP.current.key, index, true);
+        if (iosOTP.current.key.length === length) {
+          handleOTP(iosOTP.current.key);
+          return;
+        }
       }
 
       if (event.nativeEvent.key === 'Backspace') {
+        onFillEnded?.('');
+        setKeyPressed(false);
+        iosOTP.current = { key: '', index: null };
         if (index - 1 >= 0) {
           inputRefs?.current[index - 1]?.focus();
         }
       }
     },
-    [onChangeText]
+    [handleOTP, length, onFillEnded]
   );
 
   return (
@@ -125,7 +130,7 @@ export const PinInput = ({
             ref={(input) => inputRefs?.current.push(input as TextInput)}
             key={pin}
             style={inputStyle}
-            onChangeText={(text) => onChangeText(text, pin)}
+            onChangeText={(text) => handleChangeText(text, pin)}
             onKeyPress={(event) => onKeyPress(event, pin)}
             autoComplete="sms-otp"
             textContentType="oneTimeCode"

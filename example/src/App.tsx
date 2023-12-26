@@ -6,7 +6,7 @@ import { PinInput } from '@pakenfit/react-native-pin-input';
 export default function App() {
   return (
     <View style={styles.container}>
-      <PinInput onFillEnded={(otp) => console.log(otp)} />
+      <PinInput onFillEnded={(otp) => console.log(otp)} autoFocus />
     </View>
   );
 }

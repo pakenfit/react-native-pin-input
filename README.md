@@ -87,6 +87,9 @@ The style applied to the `View` container.
 
 ---
 
+### `autoFocus`
+Should autoFocus the first `input` element.
+
 
 ## Contributing
 

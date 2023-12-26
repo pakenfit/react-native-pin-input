@@ -16,13 +16,19 @@ import { IS_IOS } from '../constants';
 type PinInputProps = {
   inputProps?: Omit<
     TextInputProps,
-    'style' | 'onChangeText' | 'onKeyPress' | 'autoComplete' | 'keyboardType'
+    | 'style'
+    | 'onChangeText'
+    | 'onKeyPress'
+    | 'autoComplete'
+    | 'keyboardType'
+    | 'autoFocus'
   >;
   inputStyle?: TextInputProps['style'];
   containerProps?: Omit<ViewProps, 'style'>;
   containerStyle?: ViewProps['style'];
   length?: number;
   onFillEnded?: (otp: string) => void;
+  autoFocus?: boolean;
 };
 export const PinInput = ({
   length = 4,
@@ -31,6 +37,7 @@ export const PinInput = ({
   containerProps,
   containerStyle,
   onFillEnded,
+  autoFocus = true,
 }: PinInputProps) => {
   const pins = Array.from({ length }).map((_, i) => i);
   const inputRefs = useRef<TextInput[]>([]);
@@ -127,6 +134,7 @@ export const PinInput = ({
         return (
           <Input
             {...inputProps}
+            autoFocus={autoFocus && pin === 0}
             ref={(input) => inputRefs?.current.push(input as TextInput)}
             key={pin}
             style={inputStyle}

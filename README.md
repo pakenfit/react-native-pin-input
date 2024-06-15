@@ -4,6 +4,7 @@ Phone Pin Input for React Native.
 
 <p align='center'>
   <img src='./assets/demo.gif' width="300">
+  <img src='./assets/demo2.gif' width="300">
 </p>
 
 
@@ -45,11 +46,19 @@ For `expo-clipboard` to work you need to follow [these additional steps to insta
 ## Usage
 
 ```js
-import { PinInput } from '@pakenfit/react-native-pin-input';
+import { Button, StyleSheet, View } from 'react-native';
+import { PinInput, PinInputRef } from '@pakenfit/react-native-pin-input';
 
-// ...
+export default function App() {
+  const ref = React.useRef<PinInputRef>(null);
 
-<PinInput length={6} onFillEnded={otp => console.log(otp)}/>
+  return (
+    <View style={styles.container}>
+      <PinInput onFillEnded={(otp) => console.log(otp)} autoFocus ref={ref} />
+      <Button title="Clear all" onPress={() => ref.current?.clear()} />
+    </View>
+  );
+}
 ```
 ---
 ## Props
@@ -89,6 +98,16 @@ The style applied to the `View` container.
 
 ### `autoFocus`
 Should autoFocus the first `input` element.
+
+## API
+The PinInput component provides the following methods through the PinInputRef:
+
+- `clear()`: clear all the pin inputs
+
+## Types
+
+### PinInputRef
+The `PinInputRef` type represents the reference to the PinInput component, allowing access to its methods. It has the only method: `clear()` see above.
 
 
 ## Contributing

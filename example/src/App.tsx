@@ -1,12 +1,15 @@
 import * as React from 'react';
 
-import { StyleSheet, View } from 'react-native';
-import { PinInput } from '@pakenfit/react-native-pin-input';
+import { Button, StyleSheet, View } from 'react-native';
+import { PinInput, PinInputRef } from '@pakenfit/react-native-pin-input';
 
 export default function App() {
+  const ref = React.useRef<PinInputRef>(null);
+
   return (
     <View style={styles.container}>
-      <PinInput onFillEnded={(otp) => console.log(otp)} autoFocus />
+      <PinInput onFillEnded={(otp) => console.log(otp)} autoFocus ref={ref} />
+      <Button title="Clear all" onPress={() => ref.current?.clear()} />
     </View>
   );
 }

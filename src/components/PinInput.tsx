@@ -131,15 +131,22 @@ export const PinInput = forwardRef<PinInputRef, PinInputProps>(
         }
 
         if (event.nativeEvent.key === 'Backspace') {
-          onFillEnded?.('');
+          // Clear only the current digit if it has value
+          if (pinsValues.current[index]) {
+            pinsValues.current[index] = '';
+            // Don't move focus - stay on current field
+            // We only reset partial state, not the entire PIN
+          } else {
+            // Only move to previous field when current field is empty
+            if (index - 1 >= 0) {
+              inputRefs?.current[index - 1]?.focus();
+            }
+          }
           setKeyPressed(false);
           iosOTP.current = { key: '', index: null };
-          if (index - 1 >= 0) {
-            inputRefs?.current[index - 1]?.focus();
-          }
         }
       },
-      [handleOTP, length, onFillEnded]
+      [handleOTP, length]
     );
 
     const clear = useCallback(() => {
